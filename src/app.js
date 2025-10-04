@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const connectDB = require("./db/db")
@@ -14,15 +15,11 @@ const app = express()
 connectDB();
 
 
-// app.use(cors({
-//   origin: process.env.CORS_ORIGIN?.trim(), // Your frontend URL from .env
-//   credentials: true
-// }));
-
 app.use(cors({
-  origin: true,
-    credentials: true
-  }));
+  origin: process.env.CORS_ORIGIN?.trim(), // Your frontend URL from .env
+  credentials: true
+}));
+
 app.use(express.json({ limit: '50kb' }));
 app.use(cookieParser());
 
