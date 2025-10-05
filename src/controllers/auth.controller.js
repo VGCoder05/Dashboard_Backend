@@ -27,14 +27,14 @@ const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
   // 2. Validate data (simple validation for now)
-  if ([username, email, password].some((field) => field?.trim() === "")) {
-    throw new ApiError(400, "All fields are required");
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
   }
 
   // 3. Check if user already exists
-  const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+  const existingUser = await User.findOne({ email });
   if (existingUser) {
-    throw new ApiError(409, "User with this email or username already exists");
+    throw new ApiError(409, "User with this email already exists");
   }
 
   // 4. Hash password
@@ -42,7 +42,6 @@ const register = asyncHandler(async (req, res) => {
 
   // 5. Create user in DB
   const user = await User.create({
-    username,
     email,
     password: hashedPassword,
   });
