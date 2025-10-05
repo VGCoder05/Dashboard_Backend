@@ -3,19 +3,6 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     // --- CORE IDENTITY & LOGIN ---
-    username: {
-      type: String,
-      // required: [true, "Username is required."],
-      trim: true,
-      lowercase: true,
-      // Regex to ensure username is simple: alphanumeric, underscores, hyphens
-      match: [
-        /^[a-zA-Z0-9_-]+$/,
-        "Username can only contain letters, numbers, underscores, and hyphens.",
-      ],
-      minlength: [3, "Username must be at least 3 characters long."],
-      maxlength: [20, "Username cannot be more than 20 characters long."],
-    },
     email: {
       type: String,
       required: [true, "Email is required."],
