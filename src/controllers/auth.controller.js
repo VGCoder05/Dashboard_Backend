@@ -15,8 +15,9 @@ const generateTokenAndSetCookie = (user, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-    sameSite: "strict",
+    sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    path: '/',
   });
 
   return token;
@@ -152,7 +153,8 @@ const me = asyncHandler(async (req, res) => {
 const logout = asyncHandler(async (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
-    expires: process.env.JWT_EXPIRES_IN, // Set expiry date to the past
+    expires: new Date(0), // Set expiry date to the past
+    path: '/',
   });
 
   res.status(200).json({ message: "Logout successful" });
