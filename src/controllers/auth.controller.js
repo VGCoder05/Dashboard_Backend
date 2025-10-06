@@ -152,7 +152,7 @@ const me = asyncHandler(async (req, res) => {
 const logout = asyncHandler(async (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
-    expires: new Date(process.env.JWT_EXPIRES_IN), // Set expiry date to the past
+    expires: process.env.JWT_EXPIRES_IN, // Set expiry date to the past
   });
 
   res.status(200).json({ message: "Logout successful" });
