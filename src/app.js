@@ -23,8 +23,18 @@ if (process.env.CORS_ORIGIN) {
     .filter(url => url !== ''); 
 }
 
+console.log("allowedOrigins: ", allowedOrigins);
+
+
 app.use(cors({
-  origin: allowedOrigins, // array of allowed frontend  origins
+  origin: (origin, callback) => {
+    // Check if the requesting origin is in your whitelist
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }, 
   credentials: true
 }));
 
