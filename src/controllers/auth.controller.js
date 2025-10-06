@@ -24,7 +24,7 @@ const generateTokenAndSetCookie = (user, res) => {
 
 const register = asyncHandler(async (req, res) => {
   // 1. Get data from request
-  const { username, email, password } = req.body;
+  const { email, password, role } = req.body;
 
   // 2. Validate data (simple validation for now)
   if (!email || !password) {
@@ -41,9 +41,13 @@ const register = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // 5. Create user in DB
-  const user = await User.create({
+    const user = await User.create({
     email,
     password: hashedPassword,
+    role: "free", // Always start as free user
+    subscription: {
+      status: "none",
+    },
   });
 
   // 6. Generate token and set cookie
@@ -59,6 +63,33 @@ const register = asyncHandler(async (req, res) => {
   res.status(201).json({
     message: "User created successfully",
     user: createdUser,
+  });
+});
+
+// To change the role of user ["free", "pro"]
+const upgradeToPremium = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  
+  // In production, integrate with payment gateway here
+  // For now, just upgrade the user
+  
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      role: "premium",
+      subscription: {
+        status: "active",
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+        plan: "monthly",
+      },
+    },
+    { new: true }
+  ).select("-password");
+
+  res.status(200).json({
+    message: "Successfully upgraded to premium",
+    user,
   });
 });
 
@@ -127,4 +158,4 @@ const logout = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 });
 
-export { register, login, me,  logout };
+export { register, login, me,  logout, upgradeToPremium };

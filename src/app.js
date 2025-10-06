@@ -14,11 +14,20 @@ const errorHandler = require("./middleware/errorMiddleware")
 const app = express()
 connectDB();
 
+// --- CORS Configuration ---
+let allowedOrigins = [];
+if (process.env.CORS_ORIGIN) {
+  allowedOrigins = process.env.CORS_ORIGIN
+    .split(',') 
+    .map(url => url.trim()) 
+    .filter(url => url !== ''); 
+}
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.trim(), // Your frontend URL from .env
+  origin: allowedOrigins, // array of allowed frontend  origins
   credentials: true
 }));
+
 
 app.use(express.json({ limit: '50kb' }));
 app.use(cookieParser());

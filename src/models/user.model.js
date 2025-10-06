@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     // --- CORE IDENTITY & LOGIN ---
+
     email: {
       type: String,
       required: [true, "Email is required."],
@@ -19,9 +20,30 @@ const userSchema = new mongoose.Schema(
       // You have to explicitly ask for it, e.g., User.findOne().select('+password')
       // select: false,
     },
-
+    role: {
+      type: String,
+      enum: ["free", "premium"], // or ["basic", "pro"]
+      default: "free",
+    },
+    subscription: {
+      status: {
+        type: String,
+        enum: ["active", "expired", "cancelled", "none"],
+        default: "none",
+      },
+      startDate: Date,
+      endDate: Date,
+      plan: {
+        type: String,
+        enum: ["monthly", "yearly", "lifetime"],
+      },
+    },
+    features: {
+      type: [String], // Store enabled features for this user
+      default: [],
+    },
   },
-  {
+    {
     timestamps: true, // createdAt, updatedAt
     // This enables virtuals to be included when you convert a document to JSON
     toJSON: { virtuals: true },
