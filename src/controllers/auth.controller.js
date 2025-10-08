@@ -15,7 +15,6 @@ const generateTokenAndSetCookie = (user, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-    sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     path: '/',
   });
