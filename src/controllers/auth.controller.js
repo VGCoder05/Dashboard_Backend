@@ -130,19 +130,19 @@ const login = asyncHandler(async (req, res) => {
 
 const me = asyncHandler(async (req, res) => {
   // 1. Get data from the middleware
-  const { id } = req.user; // Assuming your JWT payload has an 'id' field
-
-  if (!id) {
+  const { userID } = req.user; // Assuming your JWT payload has an 'userID' field
+  
+  if (!userID) {
     return res.status(400).json({ message: "User ID not found in token" });
   }
 
   // 2. Find the user correctly
-  const loggedInUser = await User.findById(id).select("-password"); 
+  const loggedInUser = await User.findById(userID).select("-password"); 
 
   if (!loggedInUser) {
     return res.status(404).json({ message: "User not found" });
   }
-
+  
   // 3. Prepare and send the response
   res.status(200).json({
     message: "User fetched successfully",

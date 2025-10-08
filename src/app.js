@@ -7,9 +7,11 @@ const cors = require("cors");
 
 // --- Routes ---
 const authRoutes = require("./routes/auth.routes")
+const productRoutes = require("./routes/product.routes")
 
 // --- Middleware ---
-const errorHandler = require("./middleware/errorMiddleware")
+const errorHandler = require("./middleware/errorMiddleware");
+const auth = require('./middleware/authMiddleware');
 
 const app = express()
 connectDB();
@@ -23,7 +25,7 @@ if (process.env.CORS_ORIGIN) {
     .filter(url => url !== ''); 
 }
 
-console.log("allowedOrigins: ", allowedOrigins);
+// console.log("allowedOrigins: ", allowedOrigins);
 
 
 app.use(cors({
@@ -45,6 +47,8 @@ app.use(cookieParser());
 // --- ROUTES ---
 // --- For Authentication ---
 app.use("/auth", authRoutes);
+// --- For Products ---
+app.use('/products',auth,  productRoutes);
 
 // --- ERROR HANDLER MIDDLEWARE ---
 app.use(errorHandler);
